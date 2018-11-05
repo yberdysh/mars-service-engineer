@@ -8,8 +8,14 @@ export default class Cell extends Component {
     }
   }
 
-  componentDidMount(){
-    console.log("locations", this.props.getBotLocations())
+  componentWillReceiveProps(){
+    const botLocations = this.props.botLocations
+    const myCellLocation = {"X": this.props.currentRow, "Y": this.props.currentColumn}
+    botLocations.forEach(location => {
+      if (JSON.stringify(location) === JSON.stringify(myCellLocation)){
+        this.setState({color: "#00F"})
+      }
+    })
   }
 
   render() {

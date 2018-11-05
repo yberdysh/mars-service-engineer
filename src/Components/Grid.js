@@ -7,11 +7,11 @@ export default class Grid extends Component {
   constructor(){
     super()
     this.state = {
-      bots: []
+      bots: [],
+      botLocations: []
     }
   this.startBotCollection = this.startBotCollection.bind(this)
   this.genMatrix = this.genMatrix.bind(this)
-  this.getBotLocations = this.getBotLocations.bind(this)
   }
 
   componentDidMount(){
@@ -26,25 +26,20 @@ export default class Grid extends Component {
     setInterval(() => {
       fetch("http://headlight-tournament-2.herokuapp.com/bots")
         .then(res => res.json())
-        .then(bots => this.setState({bots: bots["Bots"]}))
+        .then(bots => {
+          bots = bots["Bots"]
+          const botLocations = bots.map(bot => bot["Location"])
+          this.setState({bots, botLocations})
+        })
       }, 1000)
   }
 
   genMatrix(){
-    return this.props.values.map((rowVals, idx) => <div ><Row rowVals={rowVals} currentRow={idx + 1} demBots={this.state.bots} getBotLocations={this.getBotLocations} /></div>)
+    return this.props.values.map((rowVals, idx) => <div ><Row rowVals={rowVals} currentRow={idx + 1} demBots={this.state.bots} botLocations={this.state.botLocations} /></div>)
   }
-
-  getBotLocations(){
-    const initialValues = this.props.values
-    const bots = this.state.bots
-    const botLocations = bots.map(bot => bot["Location"])
-    return botLocations
-
-  }
-
 
   render() {
-    console.log("locationsssss", this.getBotLocations())
+    // console.log("grid state", this.state)
     return (
       <div id="matrix">
         {this.genMatrix()}
